@@ -2,19 +2,54 @@
 #include <vector>
 #include <cmath>
 
-void gill_moller(const std::vector<float> &numbers, int i, float &ss, float &pp, float &s_old) {
-    float s = ss, p = pp; 
-    s = s_old + numbers[i];
-    p = p + (numbers[i] - (s - s_old));
-    s_old = s;
-    ss = s;
-    pp = p;
+float default_sum(std::vector<float> &numbers)
+{
+    const int m = pow(2, 5);
+    const int n = pow(2, 20);
+
+    float sum = 0;
+    float number = 0;
+
+    for (int i = 0; i < n; i++)
+    {
+        number = 1.0 / ((i % m + 1) * (i % m + 2));
+        sum += number;
+        numbers.push_back(number);
+    }
+
+    return sum;
 }
 
-// Funkcja realizująca algorytm Kahana
-float kahan_sum(const std::vector<float> &arr) {
+float precise_sum(){
+
+    const int m = pow(2, 5);
+    const int n = pow(2, 20);
+
+    return n / (m + 1);
+}
+
+float gill_moller(const std::vector<float> &numbers)
+{
+    float s = 0;
+    float p = 0;
+    float s_old = 0;
+    int n = numbers.size();
+
+    for (int i = 0; i < n; i++)
+    {
+        s = s_old + numbers[i];
+        p = p + (numbers[i] - (s - s_old));
+        s_old = s;
+    }
+
+    return s + p;
+}
+
+float kahan_sum(const std::vector<float> &arr)
+{
     float s = 0, e = 0;
-    for (int i = 0; i < arr.size(); i++) {
+    for (int i = 0; i < arr.size(); i++)
+    {
         float tmp = s;
         float tmp2 = arr[i] + e;
         s = tmp + tmp2;
@@ -23,40 +58,23 @@ float kahan_sum(const std::vector<float> &arr) {
     return s;
 }
 
-int main() {
+int main()
+{
     std::vector<float> numbers;
+    
+    float precise = precise_sum();
+    float normal = default_sum(numbers);
+    float gm = gill_moller(numbers);
+    float kahan = kahan_sum(numbers);
 
-    int m = pow(2, 5);
-    int n = pow(2, 20);
-
-    float sum = 0;
-    float number = 0;
-    float ss = 0;
-    float pp = 0;
-    float s_old = 0; // Initialize s_old
-
-    for(int i = 0; i < n; i++) {
-        number = 1.0/((i % m + 1) * (i % m + 2));
-        sum += number;
-        numbers.push_back(number);
-        gill_moller(numbers, i, ss, pp, s_old);
-    }
-
-    float gm = ss + pp;
-
-    for(const auto &number : numbers) {
-        std::cout << number << " ";
-    }
-
-    float precise = n / (m + 1);
     std::cout << "\n";
-    std::cout << "Suma: " << sum << "\n";
-    std::cout << "Dokladny: " << precise << "\n"; 
-    std::cout << "Blad wzgledny normalny: " << fabs(sum - precise)/precise << '\n';
+    std::cout << "Suma: " << normal << "\n";
+    std::cout << "Dokladny: " << precise << "\n";
+    std::cout << "Blad wzgledny normalny: " << fabs(normal - precise) / precise << '\n';
     std::cout << "gm: " << gm << "\n";
-    std::cout << "Blad wzgledny gm: " << fabs(precise - gm)/gm << '\n';
+    std::cout << "Blad wzgledny gm: " << fabs(precise - gm) / gm << '\n';
     std::cout << "Kahan sum: " << kahan_sum(numbers) << '\n';
-    std::cout << "Blad wzgledny kahan sum: " << fabs(precise - gm)/gm << '\n';
+    std::cout << "Blad wzgledny kahan sum: " << fabs(precise - kahan) / kahan << '\n';
 
     return 0;
 }
