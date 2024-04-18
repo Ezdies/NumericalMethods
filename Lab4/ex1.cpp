@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 void fillMatrix(std::vector<std::vector<int>> &matrix, int rows, int cols)
 {
@@ -186,6 +187,31 @@ std::vector<std::vector<float>> matrixMultiplication(const std::vector<std::vect
     return C;
 }
 
+std::vector<std::vector<float>> choleskyDecomposition(const std::vector<std::vector<int>>& A) {
+    int n = A.size();
+    std::vector<std::vector<float>> L(n, std::vector<float>(n, 0));
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j <= i; ++j) {
+            float sum = 0;
+
+            if (i == j) {
+                for (int k = 0; k < j; ++k) {
+                    sum += pow(L[j][k], 2);
+                }
+                L[j][j] = sqrt(A[j][j] - sum);
+            } else {
+                for (int k = 0; k < j; ++k) {
+                    sum += (L[i][k] * L[j][k]);
+                }
+                L[i][j] = (A[i][j] - sum) / L[j][j];
+            }
+        }
+    }
+
+    return L;
+}
+
 
 
 int main()
@@ -226,6 +252,10 @@ int main()
     std::cout << "Macierz L x U\n";
     auto LxU = matrixMultiplication(L, U);
     printMatrix(LxU);
+
+    std::cout << "Rozkład Choleskiego:\n";
+    std::vector<std::vector<float>> cholesky = choleskyDecomposition(matrix);
+    printMatrix(cholesky);
 
 
 
