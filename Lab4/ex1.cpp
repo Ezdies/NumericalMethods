@@ -208,7 +208,7 @@ std::vector<std::vector<float>> choleskyDecomposition(const std::vector<std::vec
             }
         }
     }
-
+    
     return L;
 }
 

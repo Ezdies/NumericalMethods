@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <climits>
 
 //przestrzeń unormowana
 
@@ -24,7 +25,7 @@ int manhattan(const std::vector<int> &numbers){
 
 int maximum(const std::vector<int> &numbers){
 
-    int maxi = INT32_MIN;
+    int maxi = INT_MIN;
 
     for(const int number : numbers){
         maxi = abs(std::max(maxi, number));

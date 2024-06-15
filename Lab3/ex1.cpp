@@ -35,7 +35,7 @@ bool isMatSquare(int m, int n){
     return m == n;
 }
 
-std::vector<std::vector<int>> determinat(std::vector<std::vector<int>> &matrix, int n){
+int determinat(std::vector<std::vector<int>> &matrix, int n){
     if(n == 1){
         return matrix[0][0];
     }
